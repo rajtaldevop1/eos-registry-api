@@ -4,8 +4,8 @@ metadata:
   name: eos-registry-api
 spec:
   rules:
-  - host: 
-    http:
+  - host: rajserver
+  -  http:
       paths:
       - path: /
         pathType: Prefix
