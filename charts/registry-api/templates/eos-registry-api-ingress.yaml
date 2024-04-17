@@ -4,7 +4,7 @@ metadata:
   name: eos-registry-api
 spec:
   rules:
-  #- host: rajserver
+  - host: {{ .Values.ingress.host }}
     http:
       paths:
       - path: /
