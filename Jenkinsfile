@@ -16,6 +16,13 @@ spec:
     command:
     - cat
     tty: true
+    resources:
+      requests:
+        memory: "256Mi"  # Request 256 megabytes of memory
+        cpu: "100m"      # Request 100 milliCPU (0.1 CPU core)
+      limits:
+        memory: "1024Mi"  # Limit memory usage to 512 megabytes
+        cpu: "500m"      # Limit CPU usage to 200 milliCPU (0.2 CPU core)
     volumeMounts:
     - name: dockersock
       mountPath: /var/run/docker.sock
@@ -77,7 +84,8 @@ spec:
         stage ('Deploy Artifacts'){
           container('build') {
                 stage('Deploy Artifacts') {
-                  sh 'chmod 777 /home/jenkins/agent/workspace/eos-registry-api_main/mvnw'
+                  // sh 'chmod 777 /home/jenkins/agent/workspace/eos-registry-api_main/mvnw'
+                    sh 'chmod 777 /home/jenkins/agent/workspace/eos-registry-api/mvnw'
                     rtMavenRun (
                     tool: "java", // Tool name from Jenkins configuration
                     useWrapper: true,
