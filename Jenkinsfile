@@ -42,7 +42,7 @@ spec:
           container('build') {
                 stage('Sonar Scan') {
                   withSonarQubeEnv('sonar') {
-                  sh './mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=eos_eos'
+                  sh 'mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=eosproj1_eos'
                 }
                 }
             }
@@ -54,7 +54,7 @@ spec:
                 stage('Artifactory configuration') {
                     rtServer (
                     id: "jfrog",
-                    url: "https://eosartifact.jfrog.io/artifactory",
+                    url: "https://rajdev.jfrog.io/artifactory",
                     credentialsId: "jfrog"
                 )
 
@@ -77,6 +77,7 @@ spec:
         stage ('Deploy Artifacts'){
           container('build') {
                 stage('Deploy Artifacts') {
+                  sh 'chmod 777 /home/jenkins/agent/workspace/eos-registry-api_main/mvnw'
                     rtMavenRun (
                     tool: "java", // Tool name from Jenkins configuration
                     useWrapper: true,
@@ -101,7 +102,7 @@ spec:
           container('build') {
                 stage('Build Image') {
                     docker.withRegistry( 'https://registry.hub.docker.com', 'docker' ) {
-                    def customImage = docker.build("dpthub/eos-registry-api:latest")
+                    def customImage = docker.build("rajeshtalla0209/eos-registry-api:latest")
                     customImage.push()             
                     }
                 }
@@ -113,7 +114,7 @@ spec:
             dir('charts') {
               withCredentials([usernamePassword(credentialsId: 'jfrog', usernameVariable: 'username', passwordVariable: 'password')]) {
               sh '/usr/local/bin/helm package registry-api'
-              sh '/usr/local/bin/helm push-artifactory registry-api-1.0.tgz https://eosartifact.jfrog.io/artifactory/eos-helm-local --username $username --password $password'
+              sh '/usr/local/bin/helm push-artifactory registry-api-1.0.tgz https://rajdev.jfrog.io/artifactory/eos-helm-local --username $username --password $password'
               }
             }
         }
